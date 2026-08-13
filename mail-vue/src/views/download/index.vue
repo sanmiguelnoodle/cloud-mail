@@ -85,7 +85,7 @@
             一个客户端，管理你的所有邮箱。
           </p>
 
-          <!-- ==================== Download Card ==================== -->
+          <!-- ==================== Windows Download Card ==================== -->
           <div class="download-card">
 
             <div class="card-glow"></div>
@@ -161,6 +161,34 @@
               </span>
             </div>
 
+          </div>
+
+          <!-- ==================== Android Download (新增) ==================== -->
+          <div class="android-download-section">
+            <div class="android-divider"></div>
+            <div class="android-option">
+              <span class="android-badge">📱 Android</span>
+              <button
+                class="android-button"
+                :class="{ downloadingAndroid }"
+                @click="downloadAndroid"
+              >
+                <span v-if="!downloadingAndroid" class="download-content">
+                  <span class="download-icon">↓</span>
+                  <span>
+                    <strong>下载 APK</strong>
+                    <small>Android 8.0+</small>
+                  </span>
+                </span>
+                <span v-else class="download-content">
+                  <span class="spinner"></span>
+                  <span>
+                    <strong>正在启动下载</strong>
+                    <small>请稍候...</small>
+                  </span>
+                </span>
+              </button>
+            </div>
           </div>
 
           <div class="scroll-hint">
@@ -561,7 +589,7 @@
 
         <div>
           <strong>下载已开始</strong>
-          <span>Cloud Mail Windows Client</span>
+          <span>{{ downloadLabel }}</span>
         </div>
 
         <button @click="showToast = false">
@@ -587,10 +615,13 @@ const mouse = ref({
 })
 
 const downloading = ref(false)
+const downloadingAndroid = ref(false) // 新增
 const showToast = ref(false)
+const downloadLabel = ref('Cloud Mail Windows Client') // 新增，用于显示不同平台
 
 let toastTimer = null
 let downloadTimer = null
+let androidDownloadTimer = null // 新增
 
 /*
  * Background particles
@@ -609,21 +640,13 @@ function handleMouseMove(event) {
   mouse.value.y = event.clientY
 }
 
+// ===== Windows 下载 =====
 function download() {
-  if (downloading.value) {
-    return
-  }
+  if (downloading.value) return
 
   downloading.value = true
 
-  /*
-   * 使用你的 Cloudflare Worker 下载地址。
-   *
-   * 因为页面和下载地址属于同一个域名，
-   * 使用相对路径最方便。
-   */
   const link = document.createElement('a')
-
   link.href = '/download/client.exe'
   link.download = 'mail-shungleemain-setup.exe'
   link.rel = 'noopener'
@@ -632,22 +655,46 @@ function download() {
   link.click()
   link.remove()
 
+  downloadLabel.value = 'Cloud Mail Windows Client'
   showToast.value = true
 
-  if (toastTimer) {
-    clearTimeout(toastTimer)
-  }
-
+  if (toastTimer) clearTimeout(toastTimer)
   toastTimer = setTimeout(() => {
     showToast.value = false
   }, 5000)
 
-  if (downloadTimer) {
-    clearTimeout(downloadTimer)
-  }
-
+  if (downloadTimer) clearTimeout(downloadTimer)
   downloadTimer = setTimeout(() => {
     downloading.value = false
+  }, 1600)
+}
+
+// ===== Android 下载（新增） =====
+function downloadAndroid() {
+  if (downloadingAndroid.value) return
+
+  downloadingAndroid.value = true
+
+  const link = document.createElement('a')
+  link.href = '/download/client.apk'
+  link.download = 'mail-shungleemain-setup.apk'
+  link.rel = 'noopener'
+
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+
+  downloadLabel.value = 'Cloud Mail Android Client'
+  showToast.value = true
+
+  if (toastTimer) clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => {
+    showToast.value = false
+  }, 5000)
+
+  if (androidDownloadTimer) clearTimeout(androidDownloadTimer)
+  androidDownloadTimer = setTimeout(() => {
+    downloadingAndroid.value = false
   }, 1600)
 }
 
@@ -662,13 +709,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.body.classList.remove('download-page-active')
 
-  if (toastTimer) {
-    clearTimeout(toastTimer)
-  }
-
-  if (downloadTimer) {
-    clearTimeout(downloadTimer)
-  }
+  if (toastTimer) clearTimeout(toastTimer)
+  if (downloadTimer) clearTimeout(downloadTimer)
+  if (androidDownloadTimer) clearTimeout(androidDownloadTimer)
 })
 </script>
 
@@ -1118,7 +1161,7 @@ onBeforeUnmount(() => {
 }
 
 /* =========================================================
-   Download Card
+   Download Card (Windows)
 ========================================================= */
 
 .download-card {
@@ -1323,7 +1366,7 @@ onBeforeUnmount(() => {
 }
 
 /* =========================================================
-   Download Button
+   Download Button (Windows)
 ========================================================= */
 
 .download-button {
@@ -1488,6 +1531,86 @@ onBeforeUnmount(() => {
 .check {
   color: #65dca7;
   margin-right: 4px;
+}
+
+/* =========================================================
+   Android Download Section (新增)
+========================================================= */
+
+.android-download-section {
+  margin-top: 32px;
+  max-width: 510px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.android-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+}
+
+.android-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.android-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: #a5abc0;
+  letter-spacing: 0.5px;
+}
+
+.android-button {
+  position: relative;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(110deg, #3b82f6, #60a5fa);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+}
+
+.android-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+}
+
+.android-button:active {
+  transform: translateY(0);
+}
+
+.android-button .download-content {
+  gap: 10px;
+}
+
+.android-button .download-content > span:last-child {
+  align-items: center;
+}
+
+.android-button .download-content strong {
+  font-size: 13px;
+}
+
+.android-button .download-content small {
+  font-size: 8px;
+}
+
+.android-button .download-icon {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
 }
 
 /* =========================================================
@@ -2712,6 +2835,12 @@ onBeforeUnmount(() => {
     bottom: 15px;
 
     min-width: 0;
+  }
+
+  /* 移动端 Android 按钮调整 */
+  .android-option {
+    flex-direction: column;
+    gap: 12px;
   }
 }
 
