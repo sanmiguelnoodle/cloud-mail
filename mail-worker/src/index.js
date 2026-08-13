@@ -21,6 +21,25 @@ export default {
 			 return await kvObjService.toObjResp( { env }, url.pathname.substring(1));
 		 }
 
+		 if (url.pathname === '/download/client.exe') {
+    const object = await env.r2.get('mail-shungleemain-setup.exe');
+
+    if (!object) {
+        return new Response('文件不存在', {
+            status: 404
+        });
+    }
+
+    return new Response(object.body, {
+        headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename="mail-shungleemain-setup.exe"',
+            'Content-Length': object.size.toString(),
+            'Cache-Control': 'public, max-age=3600'
+        }
+    });
+}
+		
 		return env.assets.fetch(req);
 	},
 	email: email,
