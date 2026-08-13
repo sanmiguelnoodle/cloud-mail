@@ -17,7 +17,7 @@ enabled = true
 
 #[[r2_buckets]]
 #binding = "r2"			#r2对象存储绑定名默认不可修改
-#bucket_name = ""		#r2对象存储桶的名字
+#bucket_name = "mail-shungleemain-download"		#r2对象存储桶的名字
 
 #[[send_email]]
 #name = "email"			#CF发件, 配置后优先使用
