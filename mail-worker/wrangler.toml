@@ -6,21 +6,18 @@ keep_vars = true
 [observability]
 enabled = true
 
-#[[d1_databases]]
-#binding = "db"			#d1数据库绑定名默认不可修改
-#database_name = "cloudmail"		#d1数据库名字
-#database_id = "1da2f087-f248-4199-acf1-97fb13919e6e"		#d1数据库id
+[[d1_databases]]
+binding = "db"
+database_name = "cloudmail"
+database_id = "1da2f087-f248-4199-acf1-97fb13919e6e"
 
-#[[kv_namespaces]]
-#binding = "kv"			#kv绑定名默认不可修改
-#id = "3ced56340d734c46ad1c9097bdbbbf0a"					#kv数据库id
+[[kv_namespaces]]
+binding = "kv"
+id = "3ced56340d734c46ad1c9097bdbbbf0a"
 
-#[[r2_buckets]]
-#binding = "r2"			#r2对象存储绑定名默认不可修改
-#bucket_name = "mail-shungleemain-download"		#r2对象存储桶的名字
-
-#[[send_email]]
-#name = "email"			#CF发件, 配置后优先使用
+[[r2_buckets]]
+binding = "r2"
+bucket_name = "mail-shungleemain-download"
 
 [ai]
 binding = "ai"
