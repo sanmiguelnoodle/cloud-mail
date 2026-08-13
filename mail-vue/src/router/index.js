@@ -68,7 +68,12 @@ const routes = [
         path: '/:pathMatch(.*)*',
         name: '404',
         component: () => import('@/views/404/index.vue')
-    }
+    },
+    {
+    path: '/download',
+    name: 'download',
+    component: () => import('@/views/download/index.vue')
+}
 ]
 
 
