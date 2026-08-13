@@ -183,3 +183,8 @@ function removeLoading() {
 }
 
 export default router
+{
+    path: '/download',
+    name: 'download',
+    component: () => import('@/views/download/index.vue')
+},
