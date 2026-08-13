@@ -15,103 +15,148 @@ export default {
 		const url = new URL(req.url);
 
 
+
 		/**
 		 * Android APK 下载
-		 * R2 文件名:
-		 * client.apk
-		 *
-		 * 地址:
+		 * URL:
 		 * https://mail.shungleemain.com/download/client.apk
+		 *
+		 * R2:
+		 * mail-shungleemain-setup.apk
 		 */
 		if (url.pathname === '/download/client.apk') {
 
-			const object = await env.r2.get('client.apk');
+			const object = await env.r2.get(
+				'mail-shungleemain-setup.apk'
+			);
 
 
 			if (!object) {
-				return new Response('APK 文件不存在', {
-					status: 404
-				});
+
+				return new Response(
+					'APK 文件不存在',
+					{
+						status: 404
+					}
+				);
+
 			}
 
 
-			return new Response(object.body, {
-				headers: {
-					'Content-Type': 'application/vnd.android.package-archive',
-					'Content-Disposition': 'attachment; filename="client.apk"',
-					'Content-Length': object.size.toString(),
-					'Cache-Control': 'public, max-age=3600'
+			return new Response(
+				object.body,
+				{
+					headers: {
+
+						'Content-Type':
+							'application/vnd.android.package-archive',
+
+						'Content-Disposition':
+							'attachment; filename="mail-shungleemain-setup.apk"',
+
+						'Content-Length':
+							object.size.toString(),
+
+						'Cache-Control':
+							'public, max-age=3600'
+
+					}
 				}
-			});
+			);
+
 		}
+
+
 
 
 
 		/**
 		 * Windows EXE 下载
-		 * R2 文件名:
-		 * mail-shungleemain-setup.exe
-		 *
-		 * 地址:
+		 * URL:
 		 * https://mail.shungleemain.com/download/client.exe
+		 *
+		 * R2:
+		 * mail-shungleemain-setup.exe
 		 */
 		if (url.pathname === '/download/client.exe') {
+
 
 			const object = await env.r2.get(
 				'mail-shungleemain-setup.exe'
 			);
 
 
+
 			if (!object) {
-				return new Response('文件不存在', {
-					status: 404
-				});
+
+				return new Response(
+					'EXE 文件不存在',
+					{
+						status: 404
+					}
+				);
+
 			}
 
 
-			return new Response(object.body, {
-				headers: {
-					'Content-Type': 'application/octet-stream',
-					'Content-Disposition':
-						'attachment; filename="mail-shungleemain-setup.exe"',
-					'Content-Length':
-						object.size.toString(),
-					'Cache-Control':
-						'public, max-age=3600'
+
+			return new Response(
+				object.body,
+				{
+					headers: {
+
+						'Content-Type':
+							'application/octet-stream',
+
+						'Content-Disposition':
+							'attachment; filename="mail-shungleemain-setup.exe"',
+
+						'Content-Length':
+							object.size.toString(),
+
+						'Cache-Control':
+							'public, max-age=3600'
+
+					}
 				}
-			});
+			);
+
 		}
+
+
 
 
 
 		/**
 		 * API 请求
-		 * /api/xxx
-		 * 转换为
-		 * /xxx
 		 */
 		if (url.pathname.startsWith('/api/')) {
 
+
 			url.pathname =
 				url.pathname.replace('/api', '');
+
 
 			req = new Request(
 				url.toString(),
 				req
 			);
 
+
 			return app.fetch(
 				req,
 				env,
 				ctx
 			);
+
 		}
 
 
 
 
+
 		/**
-		 * KV 对象存储
+		 * KV 文件对象
 		 */
 		if (
 			[
@@ -121,6 +166,7 @@ export default {
 				p => url.pathname.startsWith(p)
 			)
 		) {
+
 
 			return await kvObjService.toObjResp(
 				{
@@ -134,8 +180,9 @@ export default {
 
 
 
+
 		/**
-		 * Vue 前端资源
+		 * Vue 前端
 		 */
 		return env.assets.fetch(req);
 
@@ -159,13 +206,16 @@ export default {
 
 		if (c.cron === '*/30 * * * *') {
 
+
 			await analysisService.refreshEchartsCache(
 				{
 					env
 				}
 			);
 
+
 			return;
+
 		}
 
 
@@ -177,11 +227,13 @@ export default {
 		);
 
 
+
 		await userService.resetDaySendCount(
 			{
 				env
 			}
 		);
+
 
 
 		await emailService.completeReceiveAll(
@@ -191,11 +243,13 @@ export default {
 		);
 
 
+
 		await oauthService.clearNoBindOathUser(
 			{
 				env
 			}
 		);
+
 
 
 		await analysisService.refreshEchartsCache(
