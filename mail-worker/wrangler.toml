@@ -8,8 +8,8 @@ enabled = true
 
 #[[d1_databases]]
 #binding = "db"			#d1数据库绑定名默认不可修改
-#database_name = ""		#d1数据库名字
-#database_id = ""		#d1数据库id
+#database_name = "cloudmail"		#d1数据库名字
+#database_id = "1da2f087-f248-4199-acf1-97fb13919e6e"		#d1数据库id
 
 #[[kv_namespaces]]
 #binding = "kv"			#kv绑定名默认不可修改
