@@ -10,22 +10,6 @@ export default {
 	const url = new URL(request.url)
 
 if (url.pathname === "/download/client.apk") {
-    const apk = await env.r2.get("client.apk")
-
-    if (!apk) {
-        return new Response("APK not found", {
-            status: 404
-        })
-    }
-
-    return new Response(apk.body, {
-        headers: {
-            "Content-Type": "application/vnd.android.package-archive",
-            "Content-Disposition": 'attachment; filename="client.apk"',
-            "Cache-Control": "public, max-age=86400"
-        }
-    })
-}
 	 async fetch(req, env, ctx) {
 
 		const url = new URL(req.url)
